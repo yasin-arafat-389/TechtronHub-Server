@@ -8,7 +8,7 @@ const port = process.env.PORT || 5001;
 app.use(express.json());
 app.use(cors());
 
-const { MongoClient, ServerApiVersion } = require("mongodb");
+const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASSWORD}@cluster0.gef2z8f.mongodb.net/?retryWrites=true&w=majority`;
 
 const client = new MongoClient(uri, {
@@ -22,6 +22,7 @@ const client = new MongoClient(uri, {
 async function run() {
   const brandCollection = client.db("TechtronHub").collection("BrandInfo");
   const products = client.db("TechtronHub").collection("AllProducts");
+  const orders = client.db("TechtronHub").collection("OrderInfo");
 
   try {
     await client.connect();
@@ -60,6 +61,29 @@ async function run() {
     // Post data from add product
     app.get("/products", async (req, res) => {
       const result = await products.find().toArray();
+      res.send(result);
+    });
+
+    // Post data from add product
+    app.get("/products/:id", async (req, res) => {
+      let id = req.params.id;
+      const query = { _id: new ObjectId(id) };
+      const result = await products.findOne(query);
+      res.send(result);
+    });
+
+    // Post API to store order details in the orders collection
+    app.post("/order", async (req, res) => {
+      const { image, name, brand, type, price, shortDesc, rating } = req.body;
+      const result = await orders.insertOne({
+        image,
+        name,
+        brand,
+        type,
+        price,
+        shortDesc,
+        rating,
+      });
       res.send(result);
     });
 
