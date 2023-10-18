@@ -21,14 +21,45 @@ const client = new MongoClient(uri, {
 
 async function run() {
   const brandCollection = client.db("TechtronHub").collection("BrandInfo");
+  const products = client.db("TechtronHub").collection("AllProducts");
 
   try {
     await client.connect();
     await client.db("admin").command({ ping: 1 });
 
-    // Brand names and images API
+    // Get Brand names and images API
     app.get("/brands", async (req, res) => {
       const result = await brandCollection.find().toArray();
+      res.send(result);
+    });
+
+    // Get single Brand name and info API
+    app.get("/brands/:path", async (req, res) => {
+      let path = req.params.path;
+      const query = { path: path };
+      const result = await brandCollection.findOne(query);
+      res.send(result);
+    });
+
+    // Post data from add product
+    app.post("/add", async (req, res) => {
+      const { image, name, brand, type, price, shortDesc, rating } = req.body;
+
+      const result = await products.insertOne({
+        image,
+        name,
+        brand,
+        type,
+        price,
+        shortDesc,
+        rating,
+      });
+      res.send(result);
+    });
+
+    // Post data from add product
+    app.get("/products", async (req, res) => {
+      const result = await products.find().toArray();
       res.send(result);
     });
 
