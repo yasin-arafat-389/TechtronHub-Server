@@ -87,6 +87,20 @@ async function run() {
       res.send(result);
     });
 
+    // GET api to get all the data from orders collection
+    app.get("/orders", async (req, res) => {
+      const result = await orders.find().toArray();
+      res.send(result);
+    });
+
+    // Delete api to delete data from orders
+    app.delete("/delete/:id", async (req, res) => {
+      let id = req.params.id;
+      const query = { _id: new ObjectId(id) };
+      const result = await orders.deleteOne(query);
+      res.send(result);
+    });
+
     console.log(
       "Pinged your deployment. You successfully connected to MongoDB!"
     );
