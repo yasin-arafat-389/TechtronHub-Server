@@ -101,6 +101,27 @@ async function run() {
       res.send(result);
     });
 
+    // Put requesting handling when user wants to update a data
+    app.put("/update/:id", async (req, res) => {
+      const { id } = req.params;
+      const { image, name, brand, type, price, rating } = req.body;
+      const filter = { _id: new ObjectId(id) };
+      const options = { upsert: true };
+      const updateDoc = {
+        $set: {
+          image,
+          name,
+          brand,
+          type,
+          price,
+
+          rating,
+        },
+      };
+      const result = await products.updateOne(filter, updateDoc, options);
+      res.send(result);
+    });
+
     console.log(
       "Pinged your deployment. You successfully connected to MongoDB!"
     );
