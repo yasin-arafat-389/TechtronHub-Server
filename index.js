@@ -25,7 +25,6 @@ async function run() {
   const orders = client.db("TechtronHub").collection("OrderInfo");
 
   try {
-    await client.connect();
     await client.db("admin").command({ ping: 1 });
 
     // Get Brand names and images API
