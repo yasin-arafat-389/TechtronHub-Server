@@ -25,8 +25,6 @@ async function run() {
   const orders = client.db("TechtronHub").collection("OrderInfo");
 
   try {
-    await client.db("admin").command({ ping: 1 });
-
     // Get Brand names and images API
     app.get("/brands", async (req, res) => {
       const result = await brandCollection.find().toArray();
