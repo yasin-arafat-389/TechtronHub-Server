@@ -71,15 +71,13 @@ async function run() {
 
     // Post API to store order details in the orders collection
     app.post("/order", async (req, res) => {
-      const { image, name, brand, type, price, shortDesc, rating } = req.body;
+      const { image, brand, name, price, currentUser } = req.body;
       const result = await orders.insertOne({
         image,
-        name,
         brand,
-        type,
+        name,
         price,
-        shortDesc,
-        rating,
+        currentUser,
       });
       res.send(result);
     });
@@ -87,6 +85,14 @@ async function run() {
     // GET api to get all the data from orders collection
     app.get("/orders", async (req, res) => {
       const result = await orders.find().toArray();
+      res.send(result);
+    });
+
+    // GET api to get single data from orders collection by email
+    app.get("/orders/:email", async (req, res) => {
+      let email = req.params.email;
+      const query = { currentUser: email };
+      const result = await orders.find(query).toArray();
       res.send(result);
     });
 
@@ -111,7 +117,6 @@ async function run() {
           brand,
           type,
           price,
-
           rating,
         },
       };
